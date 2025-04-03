@@ -1,70 +1,120 @@
-/* VirtualizedTable.css */
 .virtual-container {
   height: calc(100vh - 200px);
   width: 100%;
   margin-top: 10px;
-  overflow-x: hidden; /* Ngăn chặn thanh cuộn ngang */
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
-input[type="checkbox"] {
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
-  margin: 0 auto; /* Căn giữa checkbox */
+.virtual-table-wrapper {
+  overflow-x: hidden !important;
 }
 
 .virtual-header {
   display: grid;
-  grid-template-columns: 40px minmax(120px, 1fr) minmax(120px, 1fr) minmax(180px, 1.5fr) minmax(150px, 1fr) minmax(100px, 0.8fr) minmax(100px, 0.8fr);
+  grid-template-columns:
+    40px minmax(120px, 1fr) minmax(120px, 1fr) minmax(180px, 1.5fr) minmax(150px, 1fr) minmax(100px, 0.8fr) minmax(100px, 0.8fr);
   padding: 12px 15px;
   background-color: #f5f5f5;
   font-weight: bold;
   border-bottom: 1px solid #ddd;
-  min-width: 100%; /* Đảm bảo header rộng bằng nội dung */
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .dark .virtual-header {
   background-color: #2a2a2a;
 }
 
-.virtual-header > div {
+.virtual-header>div {
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Thêm dấu ... nếu nội dung quá dài */
+  text-overflow: ellipsis;
   padding: 0 5px;
 }
 
 .virtual-row {
   display: grid;
-  grid-template-columns: 40px minmax(120px, 1fr) minmax(120px, 1fr) minmax(180px, 1.5fr) minmax(150px, 1fr) minmax(100px, 0.8fr) minmax(100px, 0.8fr);
+  grid-template-columns:
+    40px minmax(120px, 1fr) minmax(120px, 1fr) minmax(180px, 1.5fr) minmax(150px, 1fr) minmax(100px, 0.8fr) minmax(100px, 0.8fr);
   align-items: center;
-  padding: 12px 15px;
+  padding: 12px 17px;
+  overflow-x: hidden !important;
   border-bottom: 1px solid #eee;
-  min-width: 100%; /* Đảm bảo hàng rộng bằng nội dung */
 }
 
-.virtual-row > div {
+.registration-cell {
+  position: relative;
+}
+
+.registration-date {
+  cursor: pointer;
+}
+
+.registration-tooltip {
+  visibility: hidden;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
   white-space: nowrap;
+  z-index: 100;
+  min-width: 200px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.registration-cell:hover .registration-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.virtual-table {
   overflow: hidden;
-  text-overflow: ellipsis; /* Thêm dấu ... nếu nội dung quá dài */
-  padding: 0 5px;
 }
 
-.virtual-items {
-  overflow-x: hidden !important; /* Quan trọng: ẩn thanh cuộn ngang */
+.virtual-table::-webkit-scrollbar {
+  width: 8px;
 }
 
-.virtual-row:hover {
-  background-color: #f5f5f5;
+.virtual-table::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.dark .virtual-header {
+  background-color: #2a2a2a;
 }
 
 .dark .virtual-row {
   border-bottom-color: #444;
 }
 
-.dark .virtual-row:hover {
-  background-color: #2a2a2a;
+.dark .registration-tooltip {
+  background: #fff;
+  color: #333;
 }
 
+/* Responsive */
+@media (max-width: 768px) {
+
+  .virtual-header,
+  .virtual-row {
+    grid-template-columns:
+      35px minmax(80px, 1fr) minmax(80px, 1fr) minmax(120px, 1.5fr) minmax(100px, 1fr) minmax(70px, 0.8fr) minmax(70px, 0.8fr);
+    padding: 8px 10px;
+  }
+
+  .registration-tooltip {
+    font-size: 12px;
+    min-width: 160px;
+  }
+}

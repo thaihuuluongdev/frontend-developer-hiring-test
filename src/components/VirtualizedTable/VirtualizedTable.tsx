@@ -3,7 +3,7 @@ import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import './VirtualizedTable.css';
 import { TUser } from '../../types/user';
-import { formatBalance, formatDate } from '../../utils/format';
+import { formatBalance, formatDate, formatDateTimeDetailed } from '../../utils/format';
 
 interface VirtualizedTableProps {
   users: TUser[];
@@ -25,7 +25,6 @@ const VirtualizedTable: React.FC<VirtualizedTableProps> = ({
 }) => {
   const selectAllCheckboxRef = useRef<HTMLInputElement>(null);
 
-  // Xử lý trạng thái indeterminate cho checkbox "Chọn tất cả"
   useEffect(() => {
     if (selectAllCheckboxRef.current) {
       selectAllCheckboxRef.current.indeterminate =
@@ -48,8 +47,13 @@ const VirtualizedTable: React.FC<VirtualizedTableProps> = ({
         <div>{user.name}</div>
         <div>{formatBalance(user.balance)}</div>
         <div><a href={`mailto:${user.email}`}>{user.email}</a></div>
-        <div title={user.registerAt.toLocaleString()}>
-          {formatDate(user.registerAt)}
+        <div className="registration-cell">
+          <span className="registration-date">
+            {formatDate(user.registerAt)}
+          </span>
+          <div className="registration-tooltip">
+            {formatDateTimeDetailed(user.registerAt)}
+          </div>
         </div>
         <div className={`status-badge ${user.active ? 'active' : 'inactive'}`}>
           {user.active ? 'Active' : 'Inactive'}
@@ -70,20 +74,11 @@ const VirtualizedTable: React.FC<VirtualizedTableProps> = ({
           ref={selectAllCheckboxRef}
           checked={selectedRows.size === users.length && users.length > 0}
           onChange={() => {
-            // Sử dụng toggleRowSelection từ props
             if (selectedRows.size === users.length) {
-              // Bỏ chọn tất cả
-              users.forEach(user => {
-                if (selectedRows.has(user.id)) {
-                  toggleRowSelection(user.id);
-                }
-              });
+              users.forEach(user => toggleRowSelection(user.id));
             } else {
-              // Chọn tất cả
               users.forEach(user => {
-                if (!selectedRows.has(user.id)) {
-                  toggleRowSelection(user.id);
-                }
+                if (!selectedRows.has(user.id)) toggleRowSelection(user.id);
               });
             }
           }}
@@ -112,7 +107,7 @@ const VirtualizedTable: React.FC<VirtualizedTableProps> = ({
       <AutoSizer>
         {({ height, width }: { height: number; width: number }) => (
           <List
-            className="virtual-items"
+            className="virtual-table"
             height={height - 40}
             itemCount={users.length}
             itemSize={60}
